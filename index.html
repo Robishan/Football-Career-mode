@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Career Mode</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Football Career Mode</h1>
+    <p>Player Career + Manager Career inspired by EA FC systems</p>
+  </header>
+
+  <main>
+    <section class="top-grid">
+      <article class="card">
+        <h2>Season Hub</h2>
+        <div id="seasonSummary"></div>
+        <div class="actions">
+          <button id="advanceWeekBtn">Advance Week</button>
+          <button id="playMatchBtn">Play Next Match</button>
+          <button id="endSeasonBtn">End Season</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Player Career</h2>
+        <div id="playerSummary"></div>
+        <div class="actions">
+          <button class="training-btn" data-skill="pace">Pace Drill</button>
+          <button class="training-btn" data-skill="shooting">Shooting Drill</button>
+          <button class="training-btn" data-skill="passing">Passing Drill</button>
+          <button class="training-btn" data-skill="defending">Defending Drill</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Manager Career</h2>
+        <div id="clubSummary"></div>
+        <div class="actions">
+          <button id="scoutBtn">Scout Youth Talent</button>
+          <button id="tacticsBtn">Adjust Tactics Focus</button>
+          <button id="contractBtn">Renew Player Contract</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="lower-grid">
+      <article class="card">
+        <h2>Fixtures & Standings</h2>
+        <div id="fixtures"></div>
+      </article>
+
+      <article class="card">
+        <h2>Transfer Market</h2>
+        <div id="transferMarket"></div>
+      </article>
+
+      <article class="card">
+        <h2>Objectives & Milestones</h2>
+        <div id="objectives"></div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Career Feed</h2>
+      <ul id="feed"></ul>
+    </section>
+
+    <section class="card utility">
+      <button id="saveBtn">Save Career</button>
+      <button id="loadBtn">Load Career</button>
+      <button id="resetBtn" class="danger">Reset Career</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
