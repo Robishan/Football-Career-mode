@@ -11,4 +11,4 @@ A browser-based football career mode game built with **HTML, CSS, and JavaScript
 
 ## Run
 
-Open `/home/runner/work/Football-Career-mode/Football-Career-mode/index.html` in a browser.
+Open `index.html` in a browser.

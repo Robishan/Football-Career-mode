@@ -1,5 +1,11 @@
 const FIXTURE_COUNT = 12;
 const STORAGE_KEY = "football-career-save";
+const PLAYER_PRIMARY_SCORER_OFFSET_CHANCE = 0.5;
+const DEFENSIVE_CONFIDENCE_BOOST_CHANCE = 0.7;
+const WAGE_INCREASE_PER_RENEWAL = 5000;
+
+const youthFirstNames = ["Mason", "Aiden", "Leo", "Jude", "Rayan", "Noah"];
+const youthLastNames = ["Parker", "Silva", "Mensah", "Bennett", "Costa", "Ilic"];
 
 const opponents = [
   "Riverton FC",
@@ -167,7 +173,7 @@ function playMatch() {
 
   state.club.goalsFor += goalsFor;
   state.club.goalsAgainst += goalsAgainst;
-  state.player.goals += Math.max(0, goalsFor - (Math.random() > 0.5 ? 1 : 0));
+  state.player.goals += estimatePlayerGoals(goalsFor);
   state.player.assists += Math.max(0, goalsFor > 0 ? Math.floor(Math.random() * 2) : 0);
   state.player.fitness = Math.max(0, state.player.fitness - 18);
 
@@ -189,7 +195,9 @@ function advanceWeek() {
   if (state.tacticFocus === "Attacking") {
     state.player.morale = Math.min(100, state.player.morale + 2);
   } else if (state.tacticFocus === "Defensive") {
-    state.club.cleanSheets += Math.random() > 0.7 ? 1 : 0;
+    if (Math.random() > DEFENSIVE_CONFIDENCE_BOOST_CHANCE) {
+      state.club.boardConfidence = Math.min(100, state.club.boardConfidence + 1);
+    }
   }
 
   updateObjectives();
@@ -235,7 +243,9 @@ function endSeason() {
 
 function scoutYouth() {
   const talent = {
-    name: `${String.fromCharCode(65 + Math.floor(Math.random() * 26))}. Prospect`,
+    name: `${youthFirstNames[Math.floor(Math.random() * youthFirstNames.length)]} ${
+      youthLastNames[Math.floor(Math.random() * youthLastNames.length)]
+    }`,
     pos: ["ST", "CM", "CB", "RW", "LB"][Math.floor(Math.random() * 5)],
     age: 16 + Math.floor(Math.random() * 3),
     ovr: 63 + Math.floor(Math.random() * 8),
@@ -248,6 +258,12 @@ function scoutYouth() {
   addFeed(`Scouting report: ${talent.name} (${talent.pos}) added to shortlist.`);
 }
 
+function estimatePlayerGoals(teamGoals) {
+  // EA FC-style career mode approximation: the controlled player often contributes most,
+  // but not all, of the team's goals.
+  return Math.max(0, teamGoals - (Math.random() > PLAYER_PRIMARY_SCORER_OFFSET_CHANCE ? 1 : 0));
+}
+
 function adjustTactics() {
   const order = ["Balanced", "Attacking", "Defensive"];
   const index = order.indexOf(state.tacticFocus);
@@ -256,14 +272,14 @@ function adjustTactics() {
 }
 
 function renewContract() {
-  if (state.club.wageBudget < state.player.wage + 5000) {
+  if (state.club.wageBudget < state.player.wage + WAGE_INCREASE_PER_RENEWAL) {
     addFeed("Contract renewal failed: wage budget is too low.");
     return;
   }
 
   state.player.contractYears += 2;
-  state.player.wage += 5000;
-  state.club.wageBudget -= 5000;
+  state.player.wage += WAGE_INCREASE_PER_RENEWAL;
+  state.club.wageBudget -= WAGE_INCREASE_PER_RENEWAL;
   state.player.morale = Math.min(100, state.player.morale + 6);
   addFeed("Contract renewed for two years.");
 }
@@ -400,6 +416,15 @@ document.getElementById("tacticsBtn").addEventListener("click", () => {
 });
 document.getElementById("contractBtn").addEventListener("click", () => {
   renewContract();
+  render();
+});
+document.body.addEventListener("click", (event) => {
+  const trainingBtn = event.target.closest(".training-btn");
+  if (!trainingBtn) {
+    return;
+  }
+
+  train(trainingBtn.dataset.skill);
   render();
 });
 document.getElementById("saveBtn").addEventListener("click", saveCareer);
